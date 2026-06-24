@@ -1,0 +1,25 @@
+ {
+            "current_page": 1,
+            "data": [
+                {
+                    "id": "01KVWVF7SYRAMGXKGRK430MNNF",
+                    "name": "Test intercept",
+                    "description": "Versatile combination pliers designed for gripping, bending, and cutting wire with ease.",
+                    "price": 14.15,
+                    "is_location_offer": false,
+                    "is_rental": false,
+                    "co2_rating": "D",
+                    "in_stock": true,
+                    "is_eco_friendly": false,
+                    "product_image": {
+                        "id": "01KVWVF7S430FM23MDJKZC3B1M",
+                        "by_name": "Helinton Fantin",
+                        "by_url": "https://unsplash.com/@fantin",
+                        "source_name": "Unsplash",
+                        "source_url": "https://unsplash.com/photos/W8BNwvOvW4M",
+                        "file_name": "pliers01.avif",
+                        "title": "Combination pliers"
+                    }
+                }
+            ]
+        }
