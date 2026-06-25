@@ -1,8 +1,0 @@
-*   [33m7666e53[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Resolved merge conflicts
-[31m|[m[32m\[m  
-[31m|[m * [33m467afb1[m updated code
-* [32m|[m [33mdeb6774[m feat(tests): add intercepting test with mock data and improve test structure
-* [32m|[m [33m8a341ea[m latest
-[32m|[m[32m/[m  
-* [33m16b5b1d[m New Learning
-* [33mfe813a3[m basic framework setup

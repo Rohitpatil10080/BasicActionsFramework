@@ -1,76 +1,101 @@
 const { test, expect } = require('@playwright/test');
+const { PracticeRegistration } = require("./PageObject/PracticeRegistartion");
+const { PracticeLogin } = require("./PageObject/PracticeLogin");
+const { PracticeNegative } = require("./PageObject/PracticeNegative");
+const { PracticeCart } = require("./PageObject/PracticeCart");
 
-
-async function login(page, email, pass) {
-    await page.getByPlaceholder("Your email").fill(email);
-    await page.getByPlaceholder("Your password").fill(pass);
-
-    await page.locator('.btnSubmit').click();
-}
-
-async function logout(page) {
-    await page.locator("#menu").click();
-    await page.locator("[data-test='nav-sign-out']").click();
-}
 
 test('Registration', async ({ page }) => {
 
     const { faker } = await import('@faker-js/faker');
 
-    await page.goto('https://practicesoftwaretesting.com/', {
-      
-    });
 
-    await page.locator("[data-test='nav-sign-in']").click();
-    await page.getByRole('link', { name: 'Register your account' }).click();
+    const registerform = new PracticeRegistration(page);
 
-    // wait for form
-    await expect(page.locator('#first_name')).toBeVisible();
+    await registerform.signgoto();
+    await registerform.openRegisterPage();
 
-    const email = faker.internet.email();
-    const pass = "Test@123";
+    const user = {
+        firstname: faker.person.firstName(),
+        lastname: faker.person.lastName(),
+        DOB: "1996-05-19",
+        country: "India",
+        postalcode: faker.location.zipCode(),
+        street: faker.location.streetAddress(),
+        city: faker.location.city(),
+        state: faker.location.state(),
+        phone: faker.string.numeric(10),
+        housenumber: faker.location.buildingNumber(),
+        email: faker.internet.email(),
+        password: "Test@123"
+    };
 
-    await page.locator('#first_name').fill(faker.person.firstName());
-    await page.locator('#last_name').fill(faker.person.lastName());
-    await page.locator('#dob').fill("1996-05-19");
-    await page.locator('#country').selectOption("India");
+    await registerform.registerForm(user);
 
-    await page.locator("[data-test='postal_code']").fill(faker.location.zipCode());
-    await page.getByPlaceholder("Your Street *").fill(faker.location.streetAddress());
-    await page.getByLabel("City").fill(faker.location.city());
-    await page.locator('#state').fill(faker.location.state());
-    await page.locator('#phone').fill(faker.string.numeric(10));
-
-    await page.locator('#email').fill(email);
-    await page.locator('#password').fill(pass);
-
-    await page.getByRole('button', { name: 'Register' }).click();
-
-    // optional validation
-    await expect(page).toHaveURL("https://practicesoftwaretesting.com/auth/register");
+    await expect(page).toHaveURL(/auth/);
 });
 
 
 test('Login', async ({ page }) => {
 
-    await page.goto("https://practicesoftwaretesting.com/auth/login");
+    const practicelogin = new PracticeLogin(page);
 
-    await login(page, "anamika88@gmail.com", "Anamika@4545");
+    await practicelogin.goto();
+    await practicelogin.login1("anamika12@gmail.com", "Anamika@48");
+    await practicelogin.logout();
 
-    // safer check (avoid strict URL timeout)
-    await page.waitForLoadState('networkidle');
-
-    //await expect(page).not.toHaveURL("https://practicesoftwaretesting.com/auth/login");
+    await expect(page).not.toHaveURL("https://practicesoftwaretesting.com/account");
 });
-
 
 test('Negative', async ({ page }) => {
 
-    await page.goto("https://practicesoftwaretesting.com/auth/login");
+    const practiceNegative = new PracticeNegative(page);
 
-    await login(page, "wronguser@gmail.com", "wrongpass");
+    await practiceNegative.goto();
+    await practiceNegative.negativeLogin("wronguser@gmail.com", "wrongpass");
 
     const error = page.locator("text=Invalid email or password");
 
-    //await expect(error).toBeVisible({ timeout: 10000 });
+    await expect(error).toBeVisible();
+
+    console.log(await error.textContent());
 });
+
+test('Add to cart', async ({ page }) => {
+
+    const practicecart = new PracticeCart(page);
+
+    await practicecart.goto();
+    await practicecart.addProductToCart();
+    await practicecart.openCart();
+    await practicecart.proceedToCheckout();
+    await practicecart.login("anamika11@gmail.com", "Anamika@48");
+    await practicecart.HouseNumber1("123");
+    await practicecart.proceedToCheckout();
+    await practicecart.fillPayment();
+    await practicecart.finishOrder();
+
+    await page.pause();
+});
+
+
+// await page.goto("https://practicesoftwaretesting.com/");
+// await page.waitForLoadState("networkidle");
+// await page.locator(".card").nth(1).click();
+// await page.locator("[data-test='increase-quantity']").click();
+// await expect(page.locator("#quantity-input")).toHaveValue("2");
+// await page.locator("#btn-add-to-cart").click();
+// await page.locator("[data-test='nav-cart']").click();
+// //await expect(page.locator("[data-test='product-title']")).toContainText("Pliers ")
+// await page.getByRole("button", { name: "Proceed to checkout" }).click();
+// await page.locator("#email").fill("anamika666@gmail.com");
+// await page.locator("#password").fill("Anamika@48");
+// await page.locator("[data-test='login-submit']").click();
+// await page.getByRole("button", { name: "Proceed to checkout" }).click();
+// await page.getByRole("button", { name: "Proceed to checkout" }).click();
+// await page.locator("#payment-method").selectOption("Buy Now Pay Later");
+// await page.locator("#monthly_installments").selectOption("3 Monthly Installments");
+// await page.locator("[data-test='finish']").click();
+
+
+
